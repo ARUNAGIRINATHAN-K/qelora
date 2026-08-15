@@ -419,7 +419,7 @@ export const NodeCard: React.FC<NodeCardProps> = ({
           onPointerDown={(e) => e.stopPropagation()}
         >
           <span className="text-[10px] font-mono text-slate-300 px-2 truncate max-w-[120px]">
-            "{selectedText}"
+            &quot;{selectedText}&quot;
           </span>
           <button
             onClick={() => handleQuickBranch('deep-dive')}

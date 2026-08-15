@@ -175,7 +175,7 @@ Return a structured JSON object with:
         stylePrefix = "Vibrant dimensional geometric 3D render, subtle iridescent subsurface scattering, sophisticated typography-ready composition. ";
       }
 
-      let parts: any[] = [{ text: stylePrefix + prompt }];
+      const parts: any[] = [{ text: stylePrefix + prompt }];
       if (imageBase64) {
         const match = imageBase64.match(/^data:(image\/[a-zA-Z]*);base64,([^"]*)$/);
         if (match && match.length === 3) {
