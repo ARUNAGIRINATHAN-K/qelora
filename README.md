@@ -1,5 +1,6 @@
 <div align="center">
-<span style="font-family: 'Courier New'; font-size: 90px">Qelora</span>
+
+# Qelora
 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -21,41 +22,13 @@
 
 <table>
   <tr>
-    <td align="center">
-      <a href="https://react.dev/">
-        <img src="https://cdn.simpleicons.org/react/FFFFFF" alt="React" height="36">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://www.typescriptlang.org/">
-        <img src="https://cdn.simpleicons.org/typescript/FFFFFF" alt="TypeScript" height="36">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://tailwindcss.com/">
-        <img src="https://cdn.simpleicons.org/tailwindcss/FFFFFF" alt="Tailwind CSS" height="36">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://nodejs.org/">
-        <img src="https://cdn.simpleicons.org/nodedotjs/FFFFFF" alt="Node.js" height="36">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://expressjs.com/">
-        <img src="https://cdn.simpleicons.org/express/FFFFFF" alt="Express" height="36">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://vite.dev/">
-        <img src="https://cdn.simpleicons.org/vite/FFFFFF" alt="Vite" height="36">
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://ai.google.dev/">
-        <img src="https://cdn.simpleicons.org/googlegemini/FFFFFF" alt="Gemini" height="36">
-      </a>
-    </td>
+    <td align="center"><a href="https://react.dev/"><img src="https://www.readmecodegen.com/api/social-icon?name=react&size=50&color=%23ffffff" alt="react" /></a></td>
+    <td align="center"><a href="https://www.typescriptlang.org/"><img src="https://www.readmecodegen.com/api/social-icon?name=typescript&size=50&color=%23ffffff" alt="typescript" /></a></td>
+    <td align="center"><a href="https://tailwindcss.com/"><img src="https://www.readmecodegen.com/api/social-icon?name=tailwindcss&size=50&color=%23ffffff" alt="tailwindcss" /></a></td>
+    <td align="center"><a href="https://nodejs.org/"><img src="https://www.readmecodegen.com/api/social-icon?name=nodejs&size=50&color=%23ffffff" alt="nodejs" /></a></td>
+    <td align="center"><a href="https://expressjs.com/"><img src="https://www.readmecodegen.com/api/social-icon?name=express&size=50&color=%23ffffff" alt="express" /></a></td>
+    <td align="center"><a href="https://vite.dev/"><img src="https://www.readmecodegen.com/api/social-icon?name=vite&size=50&color=%23ffffff" alt="vite" /></a></td>
+    <td align="center"><a href="https://ai.google.dev/"><img src="https://www.readmecodegen.com/api/social-icon?name=googlegemini&size=50&color=%23ffffff" alt="googlegemini" /></a></td>
   </tr>
 </table>
 
