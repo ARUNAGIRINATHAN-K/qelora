@@ -1,6 +1,6 @@
 <div align="center">
 
-# Qelora
+![alt text](img/top.png)
 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
