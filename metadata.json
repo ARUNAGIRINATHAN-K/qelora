@@ -1,0 +1,8 @@
+{
+  "name": "Qelora",
+  "description": "An infinite spatial knowledge graph for exploring interconnected concepts through multi-perspective branching, contextual imagery, schematic mechanisms, and cross-disciplinary synthesis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
