@@ -52,7 +52,8 @@ export function generateSmartFallback(
     ? cleanPrompt.replace(/\b\w/g, l => l.toUpperCase())
     : words.slice(0, 5).join(" ").replace(/\b\w/g, l => l.toUpperCase());
 
-  const summary = `${modeTone}**${cleanPrompt}** governs how interconnected agents and informational structures resolve complex states under entropy and observational constraints.`;
+  const factualDefinition = `**${title}** represents the foundational baseline context and principles of this operational system.`;
+  const summary = `${factualDefinition} ${modeTone ? `${modeTone}it` : "It"} governs how interconnected agents and informational structures resolve complex states under entropy and observational constraints.`;
 
   const text = `### ${modeHeadline}
 

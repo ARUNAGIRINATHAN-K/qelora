@@ -52,7 +52,7 @@ ${modeInstruction}${parentContextText}
 Format requirements:
 - 'title': A punchy, precise 2-5 word concept title.
 - 'summary': A 1-2 sentence executive synopsis.
-- 'text': Comprehensive explanatory text with rich formatting (bullet points, bold highlights, sub-sections). Keep it substantive yet concise (approx. 180-260 words).
+- 'text': Comprehensive explanatory text. It MUST start with a clear, factual definition of the concept first, and then progressively introduce the deeper theoretical concepts, details, or perspectives under the influence of the selected mode lens. Use rich formatting (bullet points, bold highlights, sub-sections) and keep it substantive yet concise (approx. 180-260 words).
   CRITICAL REQUIREMENT: You MUST embed 3 to 5 key terms or intriguing sub-topics as markdown links formatted EXACTLY as \`[Term Name](Term Name)\` (e.g. \`[Quantum Superposition](Quantum Superposition)\`). This enables interactive visual branching.
 - 'prompts': An array of 4 distinct, thoughtful follow-up exploration ideas spanning:
   1. A deep technical question
