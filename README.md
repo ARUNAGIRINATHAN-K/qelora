@@ -93,6 +93,17 @@ GEMINI_API_KEY=your_gemini_api_key_here
 npm run dev
 ```
 
+### 4. Run via Docker [http://localhost:3000](http://localhost:3000)
+Make sure docker is running and run using Docker Compose:
+```bash
+docker compose up -d --build
+```
+Or build and run manually via raw Docker CLI:
+```bash
+docker build -t qelora .
+docker run -p 3000:3000 --env-file .env qelora
+```
+
 ---
 
 ## Scripts
@@ -102,7 +113,7 @@ npm run dev
 | `npm run dev` | Starts local full-stack development server on `port 3000` |
 | `npm run build` | Builds Vite frontend to `dist/` and bundles server to `dist/server.cjs` |
 | `npm start` | Runs the compiled production server |
-| `npm run lint` | Runs TypeScript type checking (`tsc --noEmit`) |
+| `npm run lint` | Runs TypeScript type checking (`tsc --noEmit`) and ESLint code rules (`eslint .`) |
 
 ---
 

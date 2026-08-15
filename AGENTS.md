@@ -19,6 +19,12 @@
 ├── package.json               # Dependencies and npm script lifecycle
 ├── vite.config.ts             # Vite configuration with Tailwind CSS plugin
 ├── tsconfig.json              # TypeScript compilation rules
+├── eslint.config.js           # ESLint flat configuration file
+├── Dockerfile                 # Multi-stage production container setup
+├── docker-compose.yml         # Container runtime orchestration
+├── .dockerignore              # Exclusions from Docker context
+├── .github/workflows/         # CI automation setup
+│   └── lint.yml               # Automated workflow running tsc and eslint on check-ins
 ├── src/
 │   ├── main.tsx               # React DOM root entry point
 │   ├── App.tsx                # Main canvas container, panning/zooming, node layout state
@@ -52,8 +58,19 @@ npm run build
 npm start
 ```
 
+### Docker Build & Launch
+```bash
+# Build and launch using Docker Compose
+docker compose up -d --build
+
+# Run with raw Docker CLI
+docker build -t qelora .
+docker run -p 3000:3000 --env-file .env qelora
+```
+
 ### Verification & Linting
 ```bash
+# Performs TypeScript type-checking and ESLint syntax/rule verification
 npm run lint
 ```
 
@@ -81,3 +98,7 @@ npm run lint
 
 ### 4.4 HTML Element IDs
 - Add unique `id` attributes to interactive landmark elements (buttons, modals, canvas areas) for testing and accessibility targets.
+
+### 4.5 Linting & CI Standards
+- **Zero Errors Policy**: All code modifications must keep the lint check (`npm run lint`) at **0 errors**. Fix all style violations (`prefer-const`, escaping double quotes in JSX) immediately.
+- **Actions Sync**: Do not disable or break the `.github/workflows/lint.yml` CI checking flow on check-in.
