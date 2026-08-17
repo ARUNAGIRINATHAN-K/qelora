@@ -31,9 +31,9 @@ export const DiagramViewer: React.FC<DiagramViewerProps> = ({ diagramData, title
     // Match patterns like A --> B or A -- label --> B or A[Text] --> B[Text]
     const match = line.match(/(.+?)(?:--\s*(.*?)\s*-->|-->|->|=>)(.+)/);
     if (match) {
-      const from = match[1].replace(/[[\]()]/g, '').trim();
-      const label = match[2]?.replace(/[[\]()]/g, '').trim();
-      const to = match[3]?.replace(/[[\]()]/g, '').trim();
+      let from = match[1].replace(/[[\]()]/g, '').trim();
+      let label = match[2]?.replace(/[[\]()]/g, '').trim();
+      let to = match[3]?.replace(/[[\]()]/g, '').trim();
       if (from && to) {
         relations.push({ from, to, label });
       }

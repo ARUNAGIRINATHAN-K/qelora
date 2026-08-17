@@ -265,6 +265,17 @@ export default function App() {
     setTimeout(() => centerOnPosition(x, y), 50);
 
     try {
+      // Structural hierarchy system prompt: factual definition -> progressive theoretical complexity
+      const systemPrompt = `You are Qelora, an authoritative knowledge graph and concept intelligence engine.
+Enforce the following strict structural hierarchy:
+1. OBJECTIVE & FACTUAL DEFINITION: Begin with an unambiguous, objective, and factually accurate definition of the concept in plain terms. Explain what it is, its core purpose, and what problem it solves. Avoid vague, pretentious, or pseudo-intellectual filler.
+2. PROGRESSIVE THEORETICAL COMPLEXITY:
+   - Level 1 (Fundamentals & Mechanics): Detail the step-by-step working mechanics, structural components, or operational pipeline using domain-accurate terminology.
+   - Level 2 (Theoretical Depth & Constraints): Progressively introduce deeper mathematical principles, system constraints, trade-offs, and empirical edge cases.
+   - Level 3 (Frontiers & Applications): Highlight real-world implementations, active research frontiers, and foundational connections.
+3. KEY TAKEAWAYS: Output exactly 3 concise, highly factual bullet points summarizing core principles.
+4. INTERACTIVE BRANCHING: Embed 3-5 sub-concepts as markdown links formatted EXACTLY as [Concept Name](Concept Name).`;
+
       // 1. Fetch text content & breakdown
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -272,11 +283,34 @@ export default function App() {
         body: JSON.stringify({ 
           prompt, 
           parentContext: parent ? `${parent.prompt}: ${parent.text?.slice(0, 200)}` : undefined,
-          mode 
+          mode,
+          systemPrompt
         }),
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+
+      // Robust parsing for text enforcing structural hierarchy
+      let parsedText = typeof data.text === 'string' ? data.text.trim() : '';
+      if (!parsedText && data.definition) {
+        parsedText = `### Overview\n\n#### 1. Factual Definition & Purpose\n${data.definition}\n\n#### 2. Working Principles & Mechanics\n${data.mechanics || ''}\n\n#### 3. Advanced Theoretical Depth\n${data.advanced || ''}`;
+      }
+      if (!parsedText) {
+        parsedText = 'No text generated';
+      }
+
+      // Robust parsing for keyTakeaways ensuring clean string array
+      let parsedKeyTakeaways: string[] = [];
+      if (Array.isArray(data.keyTakeaways)) {
+        parsedKeyTakeaways = data.keyTakeaways
+          .map((item: any) => (typeof item === 'string' ? item.trim() : JSON.stringify(item)))
+          .filter(Boolean);
+      } else if (typeof data.keyTakeaways === 'string') {
+        parsedKeyTakeaways = data.keyTakeaways
+          .split('\n')
+          .map((s: string) => s.replace(/^[-*•\d.]+\s*/, '').trim())
+          .filter(Boolean);
+      }
 
       let insertIndex = 0;
 
@@ -287,9 +321,9 @@ export default function App() {
             prompt,
             title: data.title || prompt,
             summary: data.summary,
-            text: data.text || 'No text generated',
-            prompts: data.prompts || [],
-            keyTakeaways: data.keyTakeaways || [],
+            text: parsedText,
+            prompts: Array.isArray(data.prompts) ? data.prompts : [],
+            keyTakeaways: parsedKeyTakeaways,
             diagramData: data.diagramData,
             imageUrl: '',
             imageLoading: true,
@@ -463,8 +497,21 @@ export default function App() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
-    generateNode(searchQuery.trim(), 0, 0);
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    let targetX = 0;
+    let targetY = 0;
+    if (nodes.length > 0) {
+      // Find rightmost or lowest region to avoid overlapping
+      const maxX = Math.max(...nodes.map(n => n.x));
+      const rightmostNodes = nodes.filter(n => Math.abs(n.x - maxX) < 100);
+      const maxY = Math.max(...rightmostNodes.map(n => n.y));
+      targetX = maxX + NODE_WIDTH + 260;
+      targetY = maxY;
+    }
+
+    generateNode(query, targetX, targetY);
     setSearchQuery('');
   };
 

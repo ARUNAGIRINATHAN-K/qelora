@@ -24,49 +24,53 @@ async function startServer() {
 
   // Main Knowledge Node Generation with Perspective Modes
   app.post("/api/generate", async (req, res) => {
-    const { prompt, parentContext, mode = "standard" } = req.body;
+    const { prompt, parentContext, mode = "standard", systemPrompt } = req.body;
     if (!prompt) {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
     try {
-      let modeInstruction = "";
-      if (mode === "deep-dive") {
-        modeInstruction = "Focus on rigorous technical mechanics, foundational equations/axioms, subtle nuances, and underlying principles.";
-      } else if (mode === "contrarian") {
-        modeInstruction = "Focus on major counter-arguments, scientific critiques, alternative competing theories, potential pitfalls, and edge cases.";
-      } else if (mode === "applications") {
-        modeInstruction = "Focus on concrete real-world case studies, current commercial/scientific applications, and practical implementation stories.";
-      } else if (mode === "timeline") {
-        modeInstruction = "Focus on historical breakthroughs, pivotal discoveries, and 5-to-10 year future projections/frontiers.";
-      } else if (mode === "analogy") {
-        modeInstruction = "Focus on cross-disciplinary connections, explaining this concept via unexpected analogies to nature, architecture, sociology, or physics.";
+      if (!process.env.GEMINI_API_KEY) {
+        throw new Error("GEMINI_API_KEY not set - using internal knowledge engine");
       }
 
-      const parentContextText = parentContext ? `\nParent Context: "${parentContext}"\nConnect and build upon this context.` : "";
+      let modeInstruction = "";
+      if (mode === "deep-dive") {
+        modeInstruction = "Focus on rigorous, first-principles technical mechanics, internal state transitions, exact formulas/algorithms, and domain-specific terminology.";
+      } else if (mode === "contrarian") {
+        modeInstruction = "Focus on documented scientific/engineering critiques, real-world edge cases, fundamental bottlenecks, bias/leakage risks, and competing alternative paradigms.";
+      } else if (mode === "applications") {
+        modeInstruction = "Focus on industry production architectures, canonical case studies, real tools/libraries, and concrete deployment workflows.";
+      } else if (mode === "timeline") {
+        modeInstruction = "Focus on verified historical milestones (with real pioneer names and dates) and modern active research frontiers.";
+      } else if (mode === "analogy") {
+        modeInstruction = "Focus on an intuitive, physically grounded analogy that accurately maps 1-to-1 to the underlying mechanism without oversimplifying.";
+      }
 
-      const systemInstruction = `You are Qelora, a world-class spatial knowledge engine and research intelligence assistant.
-Respond to the query with clear, highly engaging, and intellectually rich content in strict JSON format.
-${modeInstruction}${parentContextText}
+      const parentContextText = parentContext ? `\nParent Context: "${parentContext}"\nConnect logically with this context while addressing the specific topic.` : "";
 
-Format requirements:
-- 'title': A punchy, precise 2-5 word concept title.
-- 'summary': A 1-2 sentence executive synopsis.
-- 'text': Comprehensive explanatory text. It MUST start with a clear, factual definition of the concept first, and then progressively introduce the deeper theoretical concepts, details, or perspectives under the influence of the selected mode lens. Use rich formatting (bullet points, bold highlights, sub-sections) and keep it substantive yet concise (approx. 180-260 words).
-  CRITICAL REQUIREMENT: You MUST embed 3 to 5 key terms or intriguing sub-topics as markdown links formatted EXACTLY as \`[Term Name](Term Name)\` (e.g. \`[Quantum Superposition](Quantum Superposition)\`). This enables interactive visual branching.
-- 'prompts': An array of 4 distinct, thoughtful follow-up exploration ideas spanning:
-  1. A deep technical question
-  2. A contrarian or edge-case angle
-  3. A real-world application
-  4. An interdisciplinary analogy
-- 'keyTakeaways': An array of 3 bullet points summarizing core insights.
-- 'diagramData': A concise mermaid flowchart (e.g. \`graph TD; A[Concept]-->B[Sub-component]; A-->C[Effect]\`) or structured relationship breakdown explaining the core mechanics visually.`;
+      const defaultSystemInstruction = `You are Qelora, an authoritative knowledge graph and concept intelligence engine.
+PRIMARY DIRECTIVES:
+1. FACTUAL ACCURACY & CLEAR DEFINITIONS: Start the explanation with an objective, plain, and factually accurate definition of the topic in plain, precise terms (e.g. what it is, its core purpose, and how it is applied). Avoid vague, pretentious, or pseudo-intellectual buzzwords.
+2. PROGRESSIVE PEDAGOGICAL STRUCTURE:
+   - Section 1 (Objective Definition): Plain, textbook-accurate factual definition and fundamental purpose.
+   - Section 2 (Core Mechanics & Pipeline): Core working mechanics, step-by-step pipeline, or foundational components.
+   - Section 3 (Theoretical Complexity & Nuances): Progressive theoretical complexity, mathematical constraints, trade-offs, and research frontiers.
+3. KEY TAKEAWAYS: Provide 3 concise, fact-checked takeaway bullets summarizing the core insights.
+4. VERIFIED DOMAIN TERMINOLOGY: Use standard, authentic terminology from the topic's actual field.
+5. INTERACTIVE BRANCHING: Embed 3 to 5 real, specific sub-concepts as markdown links formatted EXACTLY as \`[Concept Name](Concept Name)\`.`;
+
+      const activeSystemInstruction = systemPrompt 
+        ? `${systemPrompt}\n\n${modeInstruction}${parentContextText}`
+        : `${defaultSystemInstruction}\n\n${modeInstruction}${parentContextText}`;
+
+      const userContent = `Topic to analyze: "${prompt}"\nProvide a deeply factual, highly relevant, and pedagogically structured breakdown of this exact concept or question.`;
 
       const textResponse = await ai.models.generateContent({
         model: "gemini-3.7-flash",
-        contents: prompt,
+        contents: userContent,
         config: {
-          systemInstruction,
+          systemInstruction: activeSystemInstruction,
           responseMimeType: "application/json",
           responseSchema: {
             type: Type.OBJECT,
@@ -93,8 +97,8 @@ Format requirements:
       rawText = rawText.replace(/```(json)?/gi, '').trim();
       const responseData = JSON.parse(rawText);
       return res.json(responseData);
-    } catch {
-      // Fallback seamlessly to the internal semantic knowledge engine
+    } catch (err: any) {
+      console.log(`[Qelora Knowledge Engine] Serving verified topic knowledge for: "${prompt}" (Reason: ${err.message || 'API fallback'})`);
       const fallbackResult = generateSmartFallback(prompt, mode, parentContext);
       return res.json(fallbackResult);
     }
@@ -111,15 +115,21 @@ Format requirements:
       const prompt = `Synthesize the profound relationship and emergent intersection between:\nConcept A: "${nodeA.prompt}" (${nodeA.title || ''})\nContext A: ${nodeA.text?.slice(0, 300) || ''}\n\nAND\nConcept B: "${nodeB.prompt}" (${nodeB.title || ''})\nContext B: ${nodeB.text?.slice(0, 300) || ''}`;
 
       const systemInstruction = `You are Qelora's Cross-Disciplinary Synthesis Engine.
-Your task is to identify non-obvious intersections, emergent paradigms, and hybrid breakthroughs that occur when combining Concept A and Concept B.
+Your task is to analyze the factual, structural, and conceptual intersection between Concept A and Concept B.
+Avoid hyperbolic or vague prose. Focus on concrete architectural bridges, shared formal mathematical/computational models, real-world cross-disciplinary applications, and legitimate theoretical tensions.
+
+Structure the 'text' progressively:
+1. **Clear Interfacial Definition**: State plainly how these two fields/concepts interface, the exact bridge between them, and the concrete problem their combination addresses.
+2. **Mechanisms of Convergence**: Detail the exact technical/scientific mechanisms that connect them.
+3. **Emergent Frontiers & Open Questions**: Explain realistic new capabilities, theoretical trade-offs, and active research challenges.
+
 Return a structured JSON object with:
-- 'title': A creative hybrid title (e.g. "Quantum Neurobiology: Emergence at the Synapse").
-- 'summary': A single captivating thesis statement of their intersection.
-- 'text': A structured breakdown of: 1. The Core Intersection, 2. Emergent Synergies, 3. Unresolved Questions.
-  Embed 3-4 markdown links formatted as \`[Term](Term)\` for further branching.
-- 'prompts': 3 new thought-provoking questions spawned by this synthesis.
-- 'keyTakeaways': 3 actionable takeaways.
-- 'diagramData': A simple mermaid graph showing how Concept A and B converge into the synthesis.`;
+- 'title': A precise hybrid title (e.g. "Neuromorphic Computing: Spiking Neural Networks in Silicon").
+- 'summary': A 1-2 sentence crystal-clear factual summary of the core intersection.
+- 'text': Comprehensive progressive explanation (approx 200-260 words). Embed 3-4 markdown links formatted as \`[Term](Term)\` representing real domain concepts.
+- 'prompts': 3 grounded follow-up research questions spawned by this intersection.
+- 'keyTakeaways': 3 actionable, factual takeaways.
+- 'diagramData': A valid Mermaid graph (e.g. \`graph TD; A[Concept A] --> C[Interface]; B[Concept B] --> C; C --> D[Application/Outcome]\`) showing the concrete convergence.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3.7-flash",
@@ -175,7 +185,7 @@ Return a structured JSON object with:
         stylePrefix = "Vibrant dimensional geometric 3D render, subtle iridescent subsurface scattering, sophisticated typography-ready composition. ";
       }
 
-      const parts: any[] = [{ text: stylePrefix + prompt }];
+      let parts: any[] = [{ text: stylePrefix + prompt }];
       if (imageBase64) {
         const match = imageBase64.match(/^data:(image\/[a-zA-Z]*);base64,([^"]*)$/);
         if (match && match.length === 3) {

@@ -83,6 +83,14 @@ Allows switching node visuals on-the-fly between 4 artistic/intellectual styles:
 
 ![QELORA](img/arch.png)
 
+### 4.1 System Components
+- **Client Application:** React 19 + TypeScript + Tailwind CSS v4 + Motion (`motion/react`) with Lucide icons.
+- **Backend Service:** Express 4 API server with Vite development middleware, bundled to a standalone CommonJS file (`dist/server.cjs`) for production.
+- **AI Core:** Google Gemini 3.7 Flash (`@google/genai`) configured with structured JSON response schemas and a strict 3-tier pedagogical hierarchy (Factual Definition → Mechanics & Pipeline → Theoretical Complexity & Frontiers).
+- **Search & Entity Extraction:** Preambles and conversational clauses are automatically parsed to extract exact domain concepts with automatic collision-free canvas positioning.
+- **Resilient Fallback Engine:** Curated offline knowledge database spanning computer science, machine learning, physics, biology, and economics for zero-downtime operation.
+- **DevOps & Containerization:** Multi-stage `Dockerfile`, `docker-compose.yml`, and GitHub Actions automated CI workflow (`.github/workflows/lint.yml`).
+
 ---
 
 ## 5. Non-Functional & Design Requirements

@@ -364,9 +364,12 @@ export const NodeCard: React.FC<NodeCardProps> = ({
                             <CornerDownRight size={10} className="opacity-60" />
                           </button>
                         ),
-                        p: ({ children }) => <p className="mb-2 leading-relaxed">{children}</p>,
-                        ul: ({ children }) => <ul className="list-disc pl-4 space-y-1 mb-2">{children}</ul>,
-                        li: ({ children }) => <li>{children}</li>,
+                        h3: ({ children }) => <h3 className="text-xs font-bold text-slate-900 mt-3 mb-1.5 font-display tracking-tight border-b border-slate-100 pb-1">{children}</h3>,
+                        h4: ({ children }) => <h4 className="text-[11px] font-bold text-slate-800 mt-2.5 mb-1 tracking-tight flex items-center gap-1.5">{children}</h4>,
+                        h5: ({ children }) => <h5 className="text-[11px] font-semibold text-slate-700 mt-2 mb-1">{children}</h5>,
+                        p: ({ children }) => <p className="mb-2 leading-relaxed text-slate-700">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc pl-4 space-y-1.5 mb-2 text-slate-700">{children}</ul>,
+                        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
                         strong: ({ children }) => <strong className="font-semibold text-slate-900">{children}</strong>
                       }}
                     >
@@ -419,7 +422,7 @@ export const NodeCard: React.FC<NodeCardProps> = ({
           onPointerDown={(e) => e.stopPropagation()}
         >
           <span className="text-[10px] font-mono text-slate-300 px-2 truncate max-w-[120px]">
-            &quot;{selectedText}&quot;
+            "{selectedText}"
           </span>
           <button
             onClick={() => handleQuickBranch('deep-dive')}
